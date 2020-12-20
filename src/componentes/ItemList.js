@@ -26,7 +26,7 @@ const ItemList = () => {
         setItems(aux);
       });
     }
-  }, []);
+  }, [categoryId]);
 
   const ReturnItems = () => {
     if (!items) {
@@ -34,7 +34,7 @@ const ItemList = () => {
     }
     const list = items.map((e, index) => {
       return (
-        <Link to={`/item/${e.data().categoryId}/${e.id}`}> 
+        <Link to={`/items/${e.data().categoryId}/${e.id}`}> 
           <div key={index} className="row justify-content-center">
             <p>{e.data().title}</p>
             <p>

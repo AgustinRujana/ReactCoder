@@ -15,7 +15,7 @@ const ItemDetailContainer = () => {
     idItem.get().then((response) => {
       setItem(response.data());
     });
-  }, []);
+  }, [id]);
 
   const ReturnItems = () => {
     if (!item) {
