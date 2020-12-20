@@ -21,7 +21,7 @@ const ItemList = () => {
       const ItemsCategory = itemCollection.where('categoryId', '==', categoryId )
       ItemsCategory.get().then((response) => {
         const aux = response.docs.map((e) => {
-          return e;
+          return {...e.data(), id:e.id};
         });
         setItems(aux);
       });
