@@ -1,44 +1,58 @@
-import React, {useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
-import ItemsObj from './Items';
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getFirestore } from "../firebase";
 
 const ItemList = () => {
-    const [items, setItems] = useState();
+  const [items, setItems] = useState();
+  const { categoryId } = useParams();
 
-    useEffect(() => {
-        const list = getItems();
-        const prod = JSON.stringify(list)
-    }, []);
+  useEffect(() => {
+    const db = getFirestore();
+    const itemCollection = db.collection("Productos"); //Nombre de la DataBase
 
-    const getItems = () => {
-        const serverResponse = new Promise(resolve => {
-            setTimeout(() => {
-                const Item = ItemsObj;
-                resolve(Item);
-            }, 2000)
+    if (categoryId === "Todos"){
+      itemCollection.get().then((response) => {
+        const aux = response.docs.map((e) => {
+          return e;
         });
-        serverResponse.then(response =>{ setItems(response); })
+        setItems(aux);
+      });
+    } else {
+      const ItemsCategory = itemCollection.where('categoryId', '==', categoryId )
+      ItemsCategory.get().then((response) => {
+        const aux = response.docs.map((e) => {
+          return e;
+        });
+        setItems(aux);
+      });
     }
+  }, []);
 
-    const ReturnItems = () => {
-        if (!items){
-            return <p className="text-center">Cargando...</p>;
-        }
-        const list = items.map((e, index) =>{
-            return <Link to={`/item/${e.id}`}><div key={index} className="row justify-content-center">
-                    <p>{e.name}</p>
-                    <p><b>${e.price}</b></p>
-                   </div></Link>
-        })
-        return list;
+  const ReturnItems = () => {
+    if (!items) {
+      return <p className="text-center">Cargando...</p>;
     }
+    const list = items.map((e, index) => {
+      return (
+        <Link to={`/item/${e.data().categoryId}/${e.id}`}> 
+          <div key={index} className="row justify-content-center">
+            <p>{e.data().title}</p>
+            <p>
+              <b>${e.data().price}</b>
+            </p>
+          </div>
+        </Link>
+      );
+    });
+    return list;
+  };
 
-    //Salida de ItemList
-    return(
-        <div>
-            <ReturnItems/>
-        </div>
-    )
-}
+  //Salida de ItemList
+  return (
+    <div>
+      <ReturnItems />
+    </div>
+  );
+};
 
 export default ItemList;

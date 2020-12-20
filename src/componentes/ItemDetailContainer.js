@@ -1,37 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ItemsObj from "./Items";
+import { getFirestore } from "../firebase";
 import ItemDetail from "./ItemDetail";
 
 const ItemDetailContainer = () => {
   const { id } = useParams();
   const [item, setItem] = useState();
 
-  useEffect(async () => {
-    const list = await getItem();
-  }, []);
+  useEffect(() => {
+    const db = getFirestore();
+    const itemCollection = db.collection("Productos");
+    const idItem = itemCollection.doc(id);
 
-  const getItem = () => {
-    const serverResponse = new Promise((resolve) => {
-      setTimeout(() => {
-        const Items = ItemsObj;
-        resolve(Items);
-      }, 1000);
+    idItem.get().then((response) => {
+      setItem(response.data());
     });
-    serverResponse.then((response) => {
-      response.forEach((element) => {
-        if (element.id === Number(id)) {
-          setItem(element);
-        }
-      });
-    });
-  };
+  }, []);
 
   const ReturnItems = () => {
     if (!item) {
       return <p>Cargando...</p>;
     }
-    return <ItemDetail item={ item } />;
+    return <ItemDetail item={item} />;
   };
 
   //Salida de ItemDetailContainer
