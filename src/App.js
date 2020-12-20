@@ -3,8 +3,11 @@ import NavBar from "./componentes/NavBar";
 import Home from "./componentes/Home";
 import CartDetail from "./componentes/CartDetail"
 import ItemDetailContainer from "./componentes/ItemDetailContainer";
+// import ItemCategoryList from "./componentes/ItemCategoryList"
+import ItemsCatalogue from "./componentes/ItemsCatalogue";
 import "./App.css";
-import { CartContext, CartProvider } from "./context/CartContext";
+import { CartProvider } from "./context/CartContext";
+// import { useEffect } from "react";
 
 function App() {
   return (
@@ -18,8 +21,11 @@ function App() {
           <Route exact path="/cart">
             <CartDetail/>
           </Route>
-          <Route exact path="/item/:id">
-            <ItemDetailContainer />
+          <Route exact path="/items/:categoryId">
+            <ItemsCatalogue/>
+          </Route>
+          <Route exact path="/items/:categoryId/:id">
+            <ItemDetailContainer/>
           </Route>
         </Switch>
       </BrowserRouter>
